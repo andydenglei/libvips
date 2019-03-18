@@ -251,7 +251,9 @@ static unsigned auto_convert_palette_data(LodePNGColorMode* mode_in, LodePNGColo
 		input_image = liq_image_create_rgba(handle, in, width, height, 0);
 	}
 
-	// You could set more options here, like liq_set_quality
+	// Set the maximum quality as same as JPEG currently.
+	liq_set_quality(handle, 50, 76);
+	liq_set_speed(handle, 10);
 	liq_error = liq_image_quantize(input_image, handle, &quantization_result);
 	if(liq_error) return liq_error;
 	
