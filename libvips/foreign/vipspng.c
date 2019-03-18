@@ -1194,24 +1194,25 @@ write_vips( Write *write,
 		free(row_pointer_in);
 		
 		error = lodepng_auto_choose_color(mode_out, (unsigned char*)image, in->Xsize, in->Ysize, mode_in);
-		if(error) return error;
-			
-		if((mode_out->colortype == LCT_RGB || mode_out->colortype == LCT_RGBA) && mode_out->bitdepth == 8)
-		{
-			lodepng_color_mode_cleanup(mode_out);
-			color_mode_init(mode_out, LCT_PALETTE, 8);
-			row_pointer_out = malloc_png_bytepp(mode_out, in->Xsize, in->Ysize);
-			error = auto_convert_palette_data(mode_in, mode_out, in->Xsize, in->Ysize, image, row_pointer_out);
-		}
-		else
-		{
-			row_pointer_out = malloc_png_bytepp(mode_out, in->Xsize, in->Ysize);
-			error = auto_convert_data(mode_in, mode_out, in->Xsize, in->Ysize, image, row_pointer_out);
-		}
-		
 		if(!error)
-			auto_converted = TRUE;
-		
+		{
+			if((mode_out->colortype == LCT_RGB || mode_out->colortype == LCT_RGBA) && mode_out->bitdepth == 8)
+			{
+				lodepng_color_mode_cleanup(mode_out);
+				color_mode_init(mode_out, LCT_PALETTE, 8);
+				row_pointer_out = malloc_png_bytepp(mode_out, in->Xsize, in->Ysize);
+				error = auto_convert_palette_data(mode_in, mode_out, in->Xsize, in->Ysize, image, row_pointer_out);
+			}
+			else
+			{
+				row_pointer_out = malloc_png_bytepp(mode_out, in->Xsize, in->Ysize);
+				error = auto_convert_data(mode_in, mode_out, in->Xsize, in->Ysize, image, row_pointer_out);
+			}
+					
+			if(!error)
+				auto_converted = TRUE;
+		}
+
 		//free mode_in and image
 		lodepng_color_mode_cleanup(mode_in);
 		free(mode_in);
